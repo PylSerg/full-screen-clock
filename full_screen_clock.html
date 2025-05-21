@@ -54,6 +54,7 @@
         #weather {
             position: fixed;
             top: 20px;
+            bottom: none;
 
             display: flex;
             flex-direction: column;
@@ -199,8 +200,8 @@
                 show: true,
                 showUpdateTime: true,
                 showWindSpeed: true,
-                positionX: "center",   // center, left, right
-                positionY: "top",   // center, top, bottom
+                positionX: "center",   // center, left, right, px
+                positionY: "top",   // center, top, bottom, px
                 size: 30,
                 lat: 50.5251285,   // latitude
                 lon: 30.4554984,   // longitude
@@ -249,16 +250,22 @@
             refWeatherBlock.style.alignItems = "end";
         };
 
+        if (typeof settings.weather.positionX == "number") {
+            refWeatherBlock.style.left = settings.weather.positionX + "px";
+        }
+
         if (settings.weather.positionY == "top") {
             refWeatherBlock.style.top = "20px";
             refWeatherBlock.style.bottom = "none";
-            refWeatherBlock.style.justifyContent = "start";
         };
 
         if (settings.weather.positionY == "bottom") {
             refWeatherBlock.style.top = "none";
             refWeatherBlock.style.bottom = "20px";
-            refWeatherBlock.style.justifyContent = "end";
+        };
+
+        if (typeof settings.weather.positionY == "number") {
+            refWeatherBlock.style.top = settings.weather.positionY + "px";
         };
 
 
