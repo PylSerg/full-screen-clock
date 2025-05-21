@@ -1,0 +1,440 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>FULL SCREEN CLOCK</title>
+
+    <style>
+        body {
+            background-color: #000;
+            font-family: "Roboto";
+
+            margin: 0px;
+            padding: 0px;
+
+            cursor: default;
+        }
+
+        .clock {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #status-bar {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+
+            display: flex;
+            flex-direction: row;
+            justify-content: end;
+            align-items: center;
+            gap: 20px;
+
+            font-size: 16px;
+        }
+
+        #internet-indicator {
+            display: block;
+
+            color: #a00;
+            font-weight: 700;
+        }
+
+        #battery-level {
+            color: #555;
+            font-weight: 700;
+        }
+
+        #weather {
+            position: fixed;
+            top: 20px;
+
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            color: #aaa;
+            text-align: center;
+        }
+
+        #weather-update-time {
+            color: #555;
+            font-size: 10px;
+        }
+
+        #weather-temperature-block {
+            display: flex;
+            flex-direction: row;
+        }
+
+        #weather-temperature {
+            font-size: 30px;
+        }
+
+        #wind-speed {
+            font-size: 10px;
+        }
+
+        #time {
+            color: #fff;
+            font-size: 400px;
+            font-weight: 400;
+            letter-spacing: 20px;
+        }
+
+        #time-separator {
+            color: #000;
+        }
+
+        #date {
+            position: fixed;
+            bottom: 50px;
+
+            color: #aaa;
+            font-size: 30px;
+            letter-spacing: 5px;
+        }
+    </style>
+</head>
+
+
+
+<body>
+    <div class="clock">
+        <div id="status-bar">
+            <div id="internet-indicator" title="Немає зв'язку з інтернетом">∅</div>
+            <div id="battery-level" title="Рівень заряду">0%</div>
+        </div>
+
+        <div id="weather">
+            <span id="weather-update-time"></span>
+
+            <div id="weather-temperature-block">
+                <img id="weather-icon" src="" width="30" /> &nbsp; <span id="weather-temperature">0°</span>
+            </div>
+
+            <span id="wind-speed">0</span>
+        </div>
+
+        <div id="time">
+            <span id="time-hours">00</span><span id="time-separator">:</span><span id="time-minutes">00</span>
+        </div>
+
+        <div id="date"><span id="date-day">Понеділок</span>, <span id="date-date">1</span><span
+                id="date-month">січня</span>
+        </div>
+    </div>
+
+
+
+    <script>
+
+        // REFS
+
+        const refStatusBar = document.getElementById("status-bar");
+        const refInternetIndicator = document.getElementById("internet-indicator");
+
+        const refBatteryLevel = document.getElementById("battery-level");
+
+        const refWeatherBlock = document.getElementById("weather");
+        const refWeatherUpdateTime = document.getElementById("weather-update-time");
+        const refWeatherIcon = document.getElementById("weather-icon");
+        const refWeatherTemperatureBlock = document.getElementById("weather-temperature-block");
+        const refWeatherTemperature = document.getElementById("weather-temperature");
+        const refWeatherWindSpeed = document.getElementById("wind-speed");
+
+        const refTimeBlock = document.getElementById("time");
+        const refTimeHours = document.getElementById("time-hours");
+        const refTimeSeparator = document.getElementById("time-separator");
+        const refTimeMinutes = document.getElementById("time-minutes");
+
+        const refDateBlock = document.getElementById("date");
+        const refDateDay = document.getElementById("date-day");
+        const refDateDate = document.getElementById("date-date");
+        const refDateMonth = document.getElementById("date-month");
+
+
+
+        // STATE
+
+        let isInternetConnection = false;
+        let isTimeSeparatorShow = false;
+        let isWeatherUpdate = false;
+
+
+
+        // SETTINGS
+
+        const settings = {
+            statusBar: {
+                show: true,
+                positionX: "right",   // center, left, right
+                positionY: "top",   // center, top, bottom
+                size: 16,
+            },
+
+            time: {
+                show: true,
+                positionX: "center",   // center, left, right
+                positionY: "center",   // center, top, bottom
+                size: 400,
+            },
+
+            date: {
+                show: true,
+                positionX: "center",   // center, left, right
+                positionY: "bottom",   // center, top, bottom
+                size: 20,
+                format: "long",   // long, short
+                separator: "/",
+            },
+
+            weather: {
+                show: true,
+                showUpdateTime: true,
+                showWindSpeed: true,
+                positionX: "center",   // center, left, right
+                positionY: "top",   // center, top, bottom
+                size: 30,
+                lat: 50.5251285,
+                lon: 30.4554984,
+                exclude: "current",   // current, minutely, hourly, daily, alerts
+                units: "metric",   // standard, metric, imperial
+                lang: "uk",
+                appid: "a0f8bcf9755e898d8105e7f0c622fc94",
+                // OPEN WEATHER API KEY: https://home.openweathermap.org/api_keys
+            },
+        };
+
+
+
+        // APPLY SETTINGS
+
+        refStatusBar.style.fontSize = settings.statusBar.size + "px";
+        refWeatherUpdateTime.style.fontSize = (settings.weather.size / 3) + "px";
+        refWeatherIcon.style.width = settings.weather.size + "px";
+        refWeatherTemperature.style.fontSize = settings.weather.size + "px";
+        refWeatherWindSpeed.style.fontSize = (settings.weather.size / 3) + "px";
+        refTimeBlock.style.fontSize = settings.time.size + "px";
+        refDateBlock.style.fontSize = settings.date.size + "px";
+
+        if (!settings.statusBar.show) refStatusBar.style.display = "none";
+        if (!settings.weather.show) refWeatherBlock.style.display = "none";
+        if (!settings.date.show) refDateBlock.style.display = "none";
+
+        if (settings.weather.positionX == "left") {
+            refWeatherBlock.style.left = "20px";
+            refWeatherBlock.style.alignItems = "start";
+            refWeatherTemperatureBlock.style.flexDirection = "row-reverse";
+        };
+
+        if (settings.weather.positionX == "right") {
+            refWeatherBlock.style.right = "20px";
+            refWeatherBlock.style.alignItems = "end";
+        };
+
+        if (settings.weather.positionY == "bottom") {
+            refWeatherBlock.style.top = "none";
+            refWeatherBlock.style.bottom = "20px";
+            refWeatherBlock.style.justifyContent = "end";
+        };
+
+
+
+        // GET WEATHER
+
+        async function getWeather() {
+            const res = await
+                fetch(`https://api.openweathermap.org/data/2.5/weather?`
+                    + `&lat=${settings.weather.lat}`
+                    + `&lon=${settings.weather.lon}`
+                    + `&exclude=${settings.weather.exclude}`
+                    + `&units=${settings.weather.units}`
+                    + `&lang=${settings.weather.lang}`
+                    + `&appid=${settings.weather.appid}`
+                )
+                    .then(res => res.json())
+                    .then(res => weather = res);
+
+            console.log(weather);
+
+            return res;
+        };
+
+
+
+        // CHANGE WEATHER
+
+        async function changeWeather(date) {
+            if (isWeatherUpdate) return;
+
+            const weather = await getWeather();
+
+            refWeatherUpdateTime.textContent = `↻ ${date.getHours() > 9 ? date.getHours() : "0" + date.getHours()}:${date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes()}`;
+            refWeatherIcon.setAttribute("src", `https://openweathermap.org/img/wn/${weather.weather[0].icon}.png`);
+            refWeatherTemperature.textContent = Math.round(weather.main.temp) + "°";
+            refWeatherWindSpeed.textContent = "⇉ " + weather.wind.speed;
+
+            isWeatherUpdate = true;
+        };
+
+
+
+        // CHANGE DATE AND TIME
+
+        function changeDate(date) {
+            refTimeHours.textContent = date.getHours() > 9 ? date.getHours() : "0" + date.getHours();
+            refTimeMinutes.textContent = date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes();
+
+            if (!settings.date.show) return;
+
+            switch (date.getDay()) {
+                case 0:
+                    refDateDay.textContent = (settings.date.format == "long" ? "Неділя" : "Нд");
+                    break;
+
+                case 1:
+                    refDateDay.textContent = (settings.date.format == "long" ? "Понеділок" : "Пн");
+                    break;
+
+                case 2:
+                    refDateDay.textContent = (settings.date.format == "long" ? "Вівторок" : "Вт");
+                    break;
+
+                case 3:
+                    refDateDay.textContent = (settings.date.format == "long" ? "Середа" : "Ср");
+                    break;
+
+                case 4:
+                    refDateDay.textContent = (settings.date.format == "long" ? "Четвер" : "Чт");
+                    break;
+
+                case 5:
+                    refDateDay.textContent = (settings.date.format == "long" ? "П'ятниця" : "Пт");
+                    break;
+
+                case 6:
+                    refDateDay.textContent = (settings.date.format == "long" ? "Субота" : "Сб");
+                    break;
+            };
+
+
+            refDateDate.textContent = date.getDate();
+
+
+            switch (date.getMonth()) {
+                case 0:
+                    refDateMonth.textContent = (settings.date.format == "long" ? " січня" : settings.date.separator + "01");
+                    break;
+
+                case 1:
+                    refDateMonth.textContent = (settings.date.format == "long" ? " лютого" : settings.date.separator + "02");
+                    break;
+
+                case 2:
+                    refDateMonth.textContent = (settings.date.format == "long" ? " березня" : settings.date.separator + "03");
+                    break;
+
+                case 3:
+                    refDateMonth.textContent = (settings.date.format == "long" ? " квітня" : settings.date.separator + "04");
+                    break;
+
+                case 4:
+                    refDateMonth.textContent = (settings.date.format == "long" ? " травня" : settings.date.separator + "05");
+                    break;
+
+                case 5:
+                    refDateMonth.textContent = (settings.date.format == "long" ? " червня" : settings.date.separator + "06");
+                    break;
+
+                case 6:
+                    refDateMonth.textContent = (settings.date.format == "long" ? " липня" : settings.date.separator + "07");
+                    break;
+
+                case 7:
+                    refDateMonth.textContent = (settings.date.format == "long" ? " серпня" : settings.date.separator + "08");
+                    break;
+
+                case 8:
+                    refDateMonth.textContent = (settings.date.format == "long" ? " вересня" : settings.date.separator + "09");
+                    break;
+
+                case 9:
+                    refDateMonth.textContent = (settings.date.format == "long" ? " жовтня" : settings.date.separator + "10");
+                    break;
+
+                case 10:
+                    refDateMonth.textContent = (settings.date.format == "long" ? " листопада" : settings.date.separator + "11");
+                    break;
+
+                case 11:
+                    refDateMonth.textContent = (settings.date.format == "long" ? " грудня" : settings.date.separator + "12");
+                    break;
+            };
+        };
+
+
+
+        // INTERVAL FOR UPDATE INFO
+
+        setInterval(() => {
+            const date = new Date();
+
+            changeDate(date);
+
+            if (isTimeSeparatorShow) {
+                refTimeSeparator.style.color = "#000";
+                isTimeSeparatorShow = !isTimeSeparatorShow;
+            } else {
+                refTimeSeparator.style.color = "#888";
+                isTimeSeparatorShow = !isTimeSeparatorShow;
+            };
+
+            navigator.getBattery().then(battery => {
+                if (battery.level <= 0.2 && !battery.charging) {
+                    refBatteryLevel.style.color = "red";
+                    refBatteryLevel.textContent = Math.round(battery.level * 100) + "%";
+                } else {
+                    refBatteryLevel.style.color = "#555";
+                    refBatteryLevel.textContent = Math.round(battery.level * 100) + "%";
+                };
+
+                if (battery.charging) {
+                    refBatteryLevel.setAttribute("title", "Заряджається");
+                    refBatteryLevel.style.color = "#005500";
+                } else {
+                    refBatteryLevel.setAttribute("title", "Рівень заряду");
+                    refBatteryLevel.style.color = "#555";
+                };
+            });
+
+            if (window.navigator.connection.rtt == 0 && settings.weather.show) {
+                refInternetIndicator.style.display = "block";
+                isInternetConnection = false;
+            } else {
+                refInternetIndicator.style.display = "none";
+
+                if (!isInternetConnection && settings.weather.show) changeWeather(date);
+
+                isInternetConnection = true;
+            };
+
+            if (date.getMinutes() % 10 == 0 && isInternetConnection && settings.weather.show) {
+                changeWeather(date);
+            } else {
+                isWeatherUpdate = false;
+            };
+        }, 1000);
+
+
+
+    </script>
+</body>
+
+</html>
