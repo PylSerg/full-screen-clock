@@ -202,11 +202,11 @@
                 positionX: "center",   // center, left, right
                 positionY: "top",   // center, top, bottom
                 size: 30,
-                lat: 50.5251285,
-                lon: 30.4554984,
+                lat: 50.5251285,   // latitude
+                lon: 30.4554984,   // longitude
                 exclude: "current",   // current, minutely, hourly, daily, alerts
                 units: "metric",   // standard, metric, imperial
-                lang: "uk",
+                lang: "uk",   // language
                 appid: "a0f8bcf9755e898d8105e7f0c622fc94",
                 // OPEN WEATHER API KEY: https://home.openweathermap.org/api_keys
             },
@@ -229,15 +229,30 @@
         if (!settings.time.show) refWeatherBlock.style.display = "none";
         if (!settings.date.show) refDateBlock.style.display = "none";
 
+        // Weather position
+        if (settings.weather.positionX == "center") {
+            refWeatherBlock.style.left = "none";
+            refWeatherBlock.style.right = "none";
+            refWeatherBlock.style.alignItems = "center";
+        };
+
         if (settings.weather.positionX == "left") {
             refWeatherBlock.style.left = "20px";
+            refWeatherBlock.style.right = "none";
             refWeatherBlock.style.alignItems = "start";
             refWeatherTemperatureBlock.style.flexDirection = "row-reverse";
         };
 
         if (settings.weather.positionX == "right") {
+            refWeatherBlock.style.left = "none";
             refWeatherBlock.style.right = "20px";
             refWeatherBlock.style.alignItems = "end";
+        };
+
+        if (settings.weather.positionY == "top") {
+            refWeatherBlock.style.top = "20px";
+            refWeatherBlock.style.bottom = "none";
+            refWeatherBlock.style.justifyContent = "start";
         };
 
         if (settings.weather.positionY == "bottom") {
