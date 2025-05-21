@@ -113,13 +113,13 @@
         </div>
 
         <div id="weather">
-            <span id="weather-update-time"></span>
+            <span id="weather-update-time">↻ 00:00</span>
 
             <div id="weather-temperature-block">
                 <img id="weather-icon" src="" width="30" /> &nbsp; <span id="weather-temperature">0°</span>
             </div>
 
-            <span id="wind-speed">0</span>
+            <span id="wind-speed">⇉ 0</span>
         </div>
 
         <div id="time">
@@ -226,6 +226,7 @@
 
         if (!settings.statusBar.show) refStatusBar.style.display = "none";
         if (!settings.weather.show) refWeatherBlock.style.display = "none";
+        if (!settings.time.show) refWeatherBlock.style.display = "none";
         if (!settings.date.show) refDateBlock.style.display = "none";
 
         if (settings.weather.positionX == "left") {
@@ -269,9 +270,9 @@
 
 
 
-        // CHANGE WEATHER
+        // UPDATE WEATHER
 
-        async function changeWeather(date) {
+        async function updateWeather(date) {
             if (isWeatherUpdate) return;
 
             const weather = await getWeather();
@@ -286,9 +287,9 @@
 
 
 
-        // CHANGE DATE AND TIME
+        // UPDATE DATE AND TIME
 
-        function changeDate(date) {
+        function updateDateTime(date) {
             refTimeHours.textContent = date.getHours() > 9 ? date.getHours() : "0" + date.getHours();
             refTimeMinutes.textContent = date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes();
 
@@ -386,7 +387,7 @@
         setInterval(() => {
             const date = new Date();
 
-            changeDate(date);
+            updateDateTime(date);
 
             if (isTimeSeparatorShow) {
                 refTimeSeparator.style.color = "#000";
@@ -420,13 +421,13 @@
             } else {
                 refInternetIndicator.style.display = "none";
 
-                if (!isInternetConnection && settings.weather.show) changeWeather(date);
+                if (!isInternetConnection && settings.weather.show) updateWeather(date);
 
                 isInternetConnection = true;
             };
 
             if (date.getMinutes() % 10 == 0 && isInternetConnection && settings.weather.show) {
-                changeWeather(date);
+                updateWeather(date);
             } else {
                 isWeatherUpdate = false;
             };
