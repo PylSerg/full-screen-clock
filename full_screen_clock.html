@@ -176,22 +176,23 @@
                 show: true,   // true, false
                 showInternetIndicator: true,   // true, false
                 showBatteryLevel: true,   // true, false
-                positionX: "right",   // center, left, right
-                positionY: "top",   // center, top, bottom
+                reverse: false,   // true, false
+                positionX: "right",   // center, left, right, px (number)
+                positionY: "top",   // center, top, bottom, px (number)
                 size: 16,   // px
             },
 
             time: {
                 show: true,   // true, false
-                positionX: "center",   // center, left, right
-                positionY: "center",   // center, top, bottom
+                positionX: "center",   // center, left, right, px (number)
+                positionY: "center",   // center, top, bottom, px (number)
                 size: 400,   // px
             },
 
             date: {
                 show: true,   // true, false
-                positionX: "center",   // center, left, right
-                positionY: "bottom",   // center, top, bottom
+                positionX: "center",   // center, left, right, px (number)
+                positionY: "bottom",   // center, top, bottom, px (number)
                 size: 20,   // px
                 format: "long",   // long, short
                 separator: "/",
@@ -201,8 +202,8 @@
                 show: true,   // true, false
                 showUpdateTime: true,   // true, false
                 showWindSpeed: true,   // true, false
-                positionX: "center",   // center, left, right, px
-                positionY: "top",   // center, top, bottom, px
+                positionX: "center",   // center, left, right, px (number)
+                positionY: "top",   // center, top, bottom, px (number)
                 size: 30,   // px
                 lat: 50.5251285,   // latitude
                 lon: 30.4554984,   // longitude
@@ -234,6 +235,47 @@
         if (!settings.weather.showWindSpeed) refWeatherWindSpeed.style.display = "none";
         if (!settings.time.show) refWeatherBlock.style.display = "none";
         if (!settings.date.show) refDateBlock.style.display = "none";
+
+        // Status Bar position
+        if (settings.statusBar.positionX == "center") {
+            refStatusBar.style.left = "none";
+            refStatusBar.style.right = "none";
+            refStatusBar.style.justifyContent = "center";
+        };
+
+        if (settings.statusBar.positionX == "left") {
+            refStatusBar.style.left = "20px";
+            refStatusBar.style.right = "none";
+            refStatusBar.style.alignItems = "start";
+            refStatusBar.style.flexDirection = "row-reverse";
+        };
+
+        if (settings.statusBar.positionX == "right") {
+            refStatusBar.style.left = "none";
+            refStatusBar.style.right = "20px";
+            refStatusBar.style.alignItems = "end";
+        };
+
+        if (typeof settings.statusBar.positionX == "number") {
+            refStatusBar.style.justifyContent = "start";
+            refStatusBar.style.left = settings.statusBar.positionX + "px";
+
+            if (settings.statusBar.reverse) refStatusBar.style.flexDirection = "row-reverse";
+        }
+
+        if (settings.statusBar.positionY == "top") {
+            refStatusBar.style.top = "20px";
+            refStatusBar.style.bottom = "none";
+        };
+
+        if (settings.statusBar.positionY == "bottom") {
+            refStatusBar.style.top = "none";
+            refStatusBar.style.bottom = "20px";
+        };
+
+        if (typeof settings.statusBar.positionY == "number") {
+            refStatusBar.style.top = settings.statusBar.positionY + "px";
+        };
 
         // Weather position
         if (settings.weather.positionX == "center") {
