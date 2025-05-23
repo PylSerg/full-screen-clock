@@ -140,7 +140,6 @@
 
         const refStatusBar = document.getElementById("status-bar");
         const refInternetIndicator = document.getElementById("internet-indicator");
-
         const refBatteryLevel = document.getElementById("battery-level");
 
         const refWeatherBlock = document.getElementById("weather");
@@ -174,35 +173,37 @@
 
         const settings = {
             statusBar: {
-                show: true,
+                show: true,   // true, false
+                showInternetIndicator: true,   // true, false
+                showBatteryLevel: true,   // true, false
                 positionX: "right",   // center, left, right
                 positionY: "top",   // center, top, bottom
-                size: 16,
+                size: 16,   // px
             },
 
             time: {
-                show: true,
+                show: true,   // true, false
                 positionX: "center",   // center, left, right
                 positionY: "center",   // center, top, bottom
-                size: 400,
+                size: 400,   // px
             },
 
             date: {
-                show: true,
+                show: true,   // true, false
                 positionX: "center",   // center, left, right
                 positionY: "bottom",   // center, top, bottom
-                size: 20,
+                size: 20,   // px
                 format: "long",   // long, short
                 separator: "/",
             },
 
             weather: {
-                show: true,
-                showUpdateTime: true,
-                showWindSpeed: true,
+                show: true,   // true, false
+                showUpdateTime: true,   // true, false
+                showWindSpeed: true,   // true, false
                 positionX: "center",   // center, left, right, px
                 positionY: "top",   // center, top, bottom, px
-                size: 30,
+                size: 30,   // px
                 lat: 50.5251285,   // latitude
                 lon: 30.4554984,   // longitude
                 exclude: "current",   // current, minutely, hourly, daily, alerts
@@ -226,7 +227,11 @@
         refDateBlock.style.fontSize = settings.date.size + "px";
 
         if (!settings.statusBar.show) refStatusBar.style.display = "none";
+        if (!settings.statusBar.showInternetIndicator) refInternetIndicator.style.display = "none";
+        if (!settings.statusBar.showBatteryLevel) refBatteryLevel.style.display = "none";
         if (!settings.weather.show) refWeatherBlock.style.display = "none";
+        if (!settings.weather.showUpdateTime) refWeatherUpdateTime.style.display = "none";
+        if (!settings.weather.showWindSpeed) refWeatherWindSpeed.style.display = "none";
         if (!settings.time.show) refWeatherBlock.style.display = "none";
         if (!settings.date.show) refDateBlock.style.display = "none";
 
@@ -421,19 +426,18 @@
 
             navigator.getBattery().then(battery => {
                 if (battery.level <= 0.2 && !battery.charging) {
-                    refBatteryLevel.style.color = "red";
+                    refBatteryLevel.setAttribute("title", "Низький рівень заряду");
+                    refBatteryLevel.style.color = "#aa0000";
                     refBatteryLevel.textContent = Math.round(battery.level * 100) + "%";
-                } else {
-                    refBatteryLevel.style.color = "#555";
-                    refBatteryLevel.textContent = Math.round(battery.level * 100) + "%";
-                };
-
-                if (battery.charging) {
+                } else if (battery.charging) {
                     refBatteryLevel.setAttribute("title", "Заряджається");
-                    refBatteryLevel.style.color = "#005500";
-                } else {
+                    refBatteryLevel.style.color = "#00aa00";
+                    refBatteryLevel.textContent = Math.round(battery.level * 100) + "%";
+                }
+                else {
                     refBatteryLevel.setAttribute("title", "Рівень заряду");
                     refBatteryLevel.style.color = "#555";
+                    refBatteryLevel.textContent = Math.round(battery.level * 100) + "%";
                 };
             });
 
