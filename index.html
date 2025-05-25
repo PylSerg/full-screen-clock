@@ -183,7 +183,7 @@
                 showBatteryLevel: true,   // true, false
                 reverse: false,   // true, false
                 positionX: "right",   // center, left, right, px (number)
-                positionY: "top",   // center, top, bottom, px (number)
+                positionY: "top",   // top, bottom, px (number)
                 size: 16,   // px
             },
 
@@ -197,7 +197,7 @@
             date: {
                 show: true,   // true, false
                 positionX: "center",   // center, left, right, px (number)
-                positionY: "bottom",   // center, top, bottom, px (number)
+                positionY: "bottom",   // top, bottom, px (number)
                 size: 20,   // px
                 format: "long",   // long, short
                 separator: "/",
@@ -208,7 +208,7 @@
                 showUpdateTime: true,   // true, false
                 showWindSpeed: true,   // true, false
                 positionX: "center",   // center, left, right, px (number)
-                positionY: "top",   // center, top, bottom, px (number)
+                positionY: "top",   // top, bottom, px (number)
                 size: 30,   // px
                 lat: 50.5251285,   // latitude
                 lon: 30.4554984,   // longitude
@@ -318,6 +318,80 @@
 
         if (typeof settings.weather.positionY == "number") {
             refWeatherBlock.style.top = settings.weather.positionY + "px";
+        };
+
+        // Time position
+        if (settings.time.positionX == "center") {
+            refTimeBlock.style.left = "none";
+            refTimeBlock.style.right = "none";
+        };
+
+        if (settings.time.positionX == "left") {
+            refTimeBlock.style.position = "fixed";
+            refTimeBlock.style.left = "20px";
+            refTimeBlock.style.right = "none";
+        };
+
+        if (settings.time.positionX == "right") {
+            refTimeBlock.style.position = "fixed";
+            refTimeBlock.style.left = "none";
+            refTimeBlock.style.right = "20px";
+        };
+
+        if (typeof settings.time.positionX == "number") {
+            refTimeBlock.style.position = "fixed";
+            refTimeBlock.style.left = settings.time.positionX + "px";
+        }
+
+        if (settings.time.positionY == "top") {
+            refTimeBlock.style.position = "fixed";
+            refTimeBlock.style.top = "20px";
+            refTimeBlock.style.bottom = "none";
+        };
+
+        if (settings.time.positionY == "bottom") {
+            refTimeBlock.style.position = "fixed";
+            refTimeBlock.style.top = "none";
+            refTimeBlock.style.bottom = "20px";
+        };
+
+        if (typeof settings.time.positionY == "number") {
+            refTimeBlock.style.position = "fixed";
+            refTimeBlock.style.top = settings.time.positionY + "px";
+        };
+
+        // Date position
+        if (settings.date.positionX == "center") {
+            refDateBlock.style.left = "none";
+            refDateBlock.style.right = "none";
+        };
+
+        if (settings.date.positionX == "left") {
+            refDateBlock.style.left = "20px";
+            refDateBlock.style.right = "none";
+        };
+
+        if (settings.date.positionX == "right") {
+            refDateBlock.style.left = "none";
+            refDateBlock.style.right = "20px";
+        };
+
+        if (typeof settings.date.positionX == "number") {
+            refDateBlock.style.left = settings.date.positionX + "px";
+        }
+
+        if (settings.date.positionY == "top") {
+            refDateBlock.style.top = "20px";
+            refDateBlock.style.bottom = "none";
+        };
+
+        if (settings.date.positionY == "bottom") {
+            refDateBlock.style.top = "none";
+            refDateBlock.style.bottom = "20px";
+        };
+
+        if (typeof settings.date.positionY == "number") {
+            refDateBlock.style.top = settings.date.positionY + "px";
         };
 
 
