@@ -320,6 +320,46 @@
             refWeatherBlock.style.top = settings.weather.positionY + "px";
         };
 
+        // Time position
+        if (settings.time.positionX == "center") {
+            refTimeBlock.style.left = "none";
+            refTimeBlock.style.right = "none";
+        };
+
+        if (settings.time.positionX == "left") {
+            refTimeBlock.style.position = "fixed";
+            refTimeBlock.style.left = "20px";
+            refTimeBlock.style.right = "none";
+        };
+
+        if (settings.time.positionX == "right") {
+            refTimeBlock.style.position = "fixed";
+            refTimeBlock.style.left = "none";
+            refTimeBlock.style.right = "20px";
+        };
+
+        if (typeof settings.time.positionX == "number") {
+            refTimeBlock.style.position = "fixed";
+            refTimeBlock.style.left = settings.time.positionX + "px";
+        }
+
+        if (settings.time.positionY == "top") {
+            refTimeBlock.style.position = "fixed";
+            refTimeBlock.style.top = "20px";
+            refTimeBlock.style.bottom = "none";
+        };
+
+        if (settings.time.positionY == "bottom") {
+            refTimeBlock.style.position = "fixed";
+            refTimeBlock.style.top = "none";
+            refTimeBlock.style.bottom = "20px";
+        };
+
+        if (typeof settings.time.positionY == "number") {
+            refTimeBlock.style.position = "fixed";
+            refTimeBlock.style.top = settings.time.positionY + "px";
+        };
+
 
 
         // GET WEATHER
