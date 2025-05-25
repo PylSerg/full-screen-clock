@@ -360,6 +360,40 @@
             refTimeBlock.style.top = settings.time.positionY + "px";
         };
 
+        // Date position
+        if (settings.date.positionX == "center") {
+            refDateBlock.style.left = "none";
+            refDateBlock.style.right = "none";
+        };
+
+        if (settings.date.positionX == "left") {
+            refDateBlock.style.left = "20px";
+            refDateBlock.style.right = "none";
+        };
+
+        if (settings.date.positionX == "right") {
+            refDateBlock.style.left = "none";
+            refDateBlock.style.right = "20px";
+        };
+
+        if (typeof settings.date.positionX == "number") {
+            refDateBlock.style.left = settings.date.positionX + "px";
+        }
+
+        if (settings.date.positionY == "top") {
+            refDateBlock.style.top = "20px";
+            refDateBlock.style.bottom = "none";
+        };
+
+        if (settings.date.positionY == "bottom") {
+            refDateBlock.style.top = "none";
+            refDateBlock.style.bottom = "20px";
+        };
+
+        if (typeof settings.date.positionY == "number") {
+            refDateBlock.style.top = settings.date.positionY + "px";
+        };
+
 
 
         // GET WEATHER
